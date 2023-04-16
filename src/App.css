@@ -1,0 +1,38 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #f8f9fa;
+  color: green;
+}
+
+.forecast-day,
+.current {
+  border-radius: 10px !important;
+  background-color: #06283d !important;
+}
+
+.forecast {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: 10px;
+}
+
+.current {
+  width: 40%;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+img {
+  width: 130px;
+  height: 130px;
+  object-fit: contain;
+  display: block;
+}
