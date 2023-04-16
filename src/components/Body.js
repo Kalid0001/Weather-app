@@ -28,32 +28,6 @@ const ACTIONS = {
   SEARCH: "search",
 };
 
-// function getParam(query, id = true) {
-//   let param;
-//   if (Array.isArray(query)) {
-//     param = "loc";
-//   } else if (id) {
-//     param = "id";
-//   } else {
-//     param = "name";
-//   }
-
-//   return param;
-// }
-
-// function filterCurrentData(d) {
-//   console.log(d);
-//   const filtered = { data: {} };
-//   filtered.name = d.location.name;
-//   filtered.country = d.location.country;
-//   filtered.data.temp = d.current.temp_c;
-//   filtered.data.humidity = d.current.humidity;
-//   filtered.data.date = d.current.last_updated;
-//   filtered.data.condition = d.current.condition.text;
-//   filtered.data.icon = d.current.condition.icon;
-//   return filtered;
-// }
-
 function filterCurrentData({ location, current }) {
   const filtered = { data: {} };
   filtered.name = location.name;
@@ -210,7 +184,7 @@ const Body = forwardRef((props, ref) => {
   return (
     <>
       <div className="container">
-        <Current data={data} />
+        <Current data={data} error={error} />
         <Forecast data={data} />
       </div>
     </>
