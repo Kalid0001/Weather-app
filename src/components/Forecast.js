@@ -8,7 +8,7 @@ const Forecast = ({ data }) => {
     <>
       {forecast && (
         <div class="container-fluid overflow-hidden forecast">
-          <div class="row gy-5 justify-content-center">
+          <div class="row forecast-row gy-5 justify-content-center">
             {forecast.map((day, i) => {
               return (
                 <div className="col-lg-4 col-md-6 col-sm-7" key={i}>
