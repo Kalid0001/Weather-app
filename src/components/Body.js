@@ -182,9 +182,9 @@ const Body = forwardRef((props, ref) => {
       url["current"] = URLS["name"]["current"] + query;
       url["forecast"] = URLS["name"]["forecast"] + query + "&days=8";
     } else {
-      url["current"] = URLS["loc"]["current"] + `${query[0]},${query[1]}`;
+      url["current"] = URLS["loc"]["current"] + `${query[1]},${query[0]}`;
       url["forecast"] =
-        URLS["loc"]["forecast"] + `${query[0]},${query[1]}` + "&days=8";
+        URLS["loc"]["forecast"] + `${query[1]},${query[0]}` + "&days=8";
       local = true;
     }
 
