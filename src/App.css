@@ -3,22 +3,26 @@
 }
 
 body {
-  background-color: #f8f9fa;
-  color: green;
+  background-color: #e6e6ea;
+  color: white;
+  height: 100%;
+}
+
+.spinner {
+  height: 40px;
 }
 
 .forecast-day,
 .current {
   border-radius: 10px !important;
-  background-color: #06283d !important;
+  background: rgb(195, 190, 190);
+  background: linear-gradient(135deg, #3c4956 42%, rgba(22, 22, 40, 1) 100%);
+  /* background-color: #f8f9fa !important; */
 }
 
 .forecast {
   margin-top: 30px;
   margin-bottom: 30px;
-  display: grid;
-  grid-template-columns: auto auto auto;
-  grid-gap: 10px;
 }
 
 .current {
@@ -35,4 +39,42 @@ img {
   height: 130px;
   object-fit: contain;
   display: block;
+}
+
+/* #49E6B9
+#3D3F5E */
+
+.humidity-icon,
+.wind-icon {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.error-message {
+  background-color: red;
+  border-bottom: #e6e6ea solid 1px;
+}
+
+.error-container {
+  margin: 0;
+  padding: 0;
+}
+
+.col-centered {
+  float: none;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (max-width: 400px) {
+  .current {
+    width: 80%;
+  }
+  .current-icon {
+    display: none;
+  }
+  .country-name {
+    display: none;
+  }
 }

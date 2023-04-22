@@ -1,5 +1,6 @@
 import Current from "./Current";
 import Forecast from "./Forecast";
+import Spinner from "./Spinner";
 import {
   forwardRef,
   useEffect,
@@ -7,7 +8,6 @@ import {
   useReducer,
   useState,
 } from "react";
-import { getLocalCordinates } from "../fetchData";
 import axios from "axios";
 
 const URLS = {
@@ -44,7 +44,6 @@ function filterCurrentData({ location, current }) {
 }
 
 function filterForecastData({ location, forecast }) {
-  console.log(forecast);
   const filtered = { data: [] };
   filtered.name = location.name;
   filtered.country = location.country;
@@ -104,24 +103,39 @@ function reducer(state, action) {
       return state;
   }
 }
+function getLocalCordinates() {
+  return new Promise((res, rej) => {
+    navigator.geolocation.getCurrentPosition(res, rej);
+  });
+}
 
 const Body = forwardRef((props, ref) => {
-  useImperativeHandle(ref, (query) => ({
-    searchCityWeather(query) {
-      fetchData(query, "name");
-    },
-  }));
-
   const [data, dispatch] = useReducer(reducer, {
     id: undefined,
     name: "LOCAL",
     country: undefined,
     current: undefined,
     forecast: undefined,
-    local: undefined,
+    local: true,
   });
-  const [position, setPosition] = useState([undefined, undefined]);
-  const [error, setError] = useState(null);
+
+  useImperativeHandle(ref, (query) => ({
+    searchCityWeather(query) {
+      fetchData(query, "name");
+    },
+    searchLocalWeather() {
+      setLocalWeather();
+    },
+    isLocal() {
+      return data.local;
+    },
+  }));
+
+  const [error, setError] = useState({
+    local: null,
+    forecast: null,
+    current: null,
+  });
 
   async function fetchWeatherData({ current, forecast }, local) {
     axios
@@ -131,6 +145,13 @@ const Body = forwardRef((props, ref) => {
         dispatch({
           type: local ? "UPDATE_FORECAST_LOCAL" : "UPDATE_FORECAST",
           payload: d,
+        });
+        setError({ ...error, forecast: null, local: null });
+      })
+      .catch((error) => {
+        setError({
+          ...error,
+          forecast: "Check your internet connetion or reload",
         });
       });
 
@@ -143,6 +164,13 @@ const Body = forwardRef((props, ref) => {
         dispatch({
           type: local ? "UPDATE_CURRENT_LOCAL" : "UPDATE_CURRENT",
           payload: d,
+        });
+        setError({ ...error, current: null, local });
+      })
+      .catch((error) => {
+        setError({
+          ...error,
+          current: "Chech your internet connetion or reload",
         });
       });
   }
@@ -160,34 +188,48 @@ const Body = forwardRef((props, ref) => {
       local = true;
     }
 
+    if (type !== "loc") {
+      setError({ ...error, local: null });
+    }
     fetchWeatherData(url, local);
   }
 
-  useEffect(() => {
-    if (data.name === "LOCAL") {
-      getLocalCordinates()
-        .then((res) => res.coords)
-        .then((cor) => {
-          setPosition([cor.longitude, cor.latitude]);
-          setError(null);
-        })
-        .catch((err) => {
-          setError("Please enable Location in your browser!");
-          console.log(err);
+  const setLocalWeather = async () => {
+    getLocalCordinates()
+      .then((res) => res.coords)
+      .then((cor) => {
+        fetchData([cor.longitude, cor.latitude]);
+        setError({ ...error, local: null });
+      })
+      .catch((err) => {
+        setError({
+          ...error,
+          local: "Please enable Location in your browser!",
         });
-      if (position[0]) {
-        fetchData(position);
-      }
-    }
-  }, position);
+      });
+  };
+  useEffect(() => {
+    setLocalWeather();
+  }, []);
 
   return (
-    <>
-      <div className="container">
-        <Current data={data} error={error} />
-        <Forecast data={data} />
+    <div className="container-fluid p-0 main">
+      <div className="error-container container-fluid">
+        <p className="text-center error-message mb-1"> {error.local}</p>
+        <p className="text-center error-message mb-1">{error.current}</p>
+        <p className="text-center error-message mb-1">{error.forecast}</p>
       </div>
-    </>
+      {!data.current & !data.forecast ? (
+        <div className="m-5">
+          <Spinner />
+        </div>
+      ) : (
+        <>
+          <Current data={data} error={error} />
+          <Forecast data={data} error={error} />
+        </>
+      )}
+    </div>
   );
 });
 

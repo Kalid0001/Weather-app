@@ -11,6 +11,8 @@ function App() {
         onSearch={(query, id) => {
           body.current.searchCityWeather(query, id);
         }}
+        onSearchLocal={() => body.current.searchLocalWeather()}
+        isLocal={() => body?.current?.isLocal()}
       />
       <Body ref={body} />
     </div>

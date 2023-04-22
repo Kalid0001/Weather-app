@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 const AutoCompleteResult = ({ alternatives, onSelectHandler }) => {
@@ -29,6 +29,8 @@ const AutoCompleteResult = ({ alternatives, onSelectHandler }) => {
 const Navbar = (props) => {
   const [query, setQuery] = useState("");
   const [alternatives, setAlternative] = useState([]);
+  const [conceal, setConceal] = useState(true);
+  const [value, setValue] = useState(true);
 
   function changeHandler(e) {
     setQuery(e.target.value);
@@ -51,43 +53,68 @@ const Navbar = (props) => {
       return;
     }
     props.onSearch(query);
-
     setQuery("");
+    setValue(!value);
   }
 
   function onSelectHandler(c) {
     setQuery("");
     props.onSearch(c.target.attributes.url.nodeValue);
+    setValue(!value);
   }
+
+  function localHandler() {
+    props.onSearchLocal();
+    setQuery("");
+    setValue(!value);
+  }
+  useEffect(() => {
+    const local = props.isLocal();
+    setConceal(local);
+  }, [value]);
+
   return (
     <>
       <nav className="navbar text-light bg-dark">
         <div className="container-fluid">
-          <a className="navbar-brand">Get Weather Info</a>
-          <form className="d-flex nav-item dropdown" onSubmit={searchHandler}>
-            <input
-              onChange={changeHandler}
-              className="form-control me-2 dropdown-toggle"
-              type="search"
-              placeholder="City"
-              aria-label="Search"
-              value={query}
-              id="navbarScrollingDropdown"
-              data-bs-toggle="dropdown"
-              aria-expanded="true"
-            />
-
-            <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-              <AutoCompleteResult
-                alternatives={alternatives}
-                onSelectHandler={onSelectHandler}
+          <a className="navbar-brand text-light">Get Weather Info</a>
+          <div className="d-flex">
+            <form className="d-flex nav-item dropdown" onSubmit={searchHandler}>
+              <input
+                onChange={changeHandler}
+                className="form-control me-2 dropdown-toggle"
+                type="search"
+                placeholder="City"
+                aria-label="Search"
+                value={query}
+                id="navbarScrollingDropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="true"
               />
-            </ul>
 
-            <button className="btn btn-outline-success" type="submit">
-              Search
-            </button>
-          </form>
+              <ul
+                className="dropdown-menu"
+                aria-labelledby="navbarScrollingDropdown"
+              >
+                <AutoCompleteResult
+                  alternatives={alternatives}
+                  onSelectHandler={onSelectHandler}
+                />
+              </ul>
+
+              <button className="btn btn-outline-success" type="submit">
+                Search
+              </button>
+            </form>
+            {!conceal && (
+              <button
+                className="btn btn-outline-success mx-2"
+                onClick={localHandler}
+              >
+                Local
+              </button>
+            )}
+          </div>
         </div>
       </nav>
     </>

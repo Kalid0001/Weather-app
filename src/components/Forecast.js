@@ -1,46 +1,49 @@
 import React from "react";
+import Humidity from "../img/humidity.png";
+import Wind from "../img/wind.png";
 
 const Forecast = ({ data }) => {
   const { forecast } = data;
   return (
-    <div className="container forecast">
+    <>
       {forecast && (
-        <>
-          {forecast.map((day, i) => {
-            return (
-              <div
-                className={` lg={4} sm={12}col p-2 card forecast-day d-flex flex-column align-items-center forecast-${
-                  i + 1
-                }`}
-              >
-                <p className="date pt-2">{day.date}</p>
-                <img src={day.icon} alt="" />
-                <div className="tempratures d-flex justify-content-between mb-3">
-                  <div className="d-flex flex-column mx-2 align-items-center">
-                    <p>{day.maxtemp}</p>
-                    <p>Max</p>
-                  </div>
-                  <div className="d-flex flex-column mx-2 align-items-center">
-                    <p>{day.mintemp}</p>
-                    <p>Min</p>
+        <div class="container-fluid overflow-hidden forecast">
+          <div class="row gy-5 justify-content-center">
+            {forecast.map((day, i) => {
+              return (
+                <div className="col-lg-4 col-md-6 col-sm-7" key={i}>
+                  <div className="d-flex flex-column align-items-center forecast-day p-2">
+                    <p className="date pt-2">{day.date}</p>
+                    <img src={day.icon} alt="" />
+                    <div className="tempratures d-flex w-100 justify-content-between">
+                      <p>
+                        Max: <span>{day.maxtemp}</span>
+                      </p>
+                      <p>
+                        Min: <span>{day.mintemp}</span>
+                      </p>
+                    </div>
+                    <div className="d-flex w-100 justify-content-between">
+                      <div className="d-flex ">
+                        <img src={Humidity} className="humidity-icon" />
+
+                        <p className="mx-2">{day.humidity}</p>
+                        <p></p>
+                      </div>
+                      <div className="d-flex">
+                        <img src={Wind} alt="" className="wind-icon" />
+
+                        <p className="mx-2">{day.wind}KpH</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div className="d-flex fluid justify-content-between">
-                  <div className="d-flex flex-column mx-2 align-items-center">
-                    <p>{day.humidity}</p>
-                    <p>Humidity</p>
-                  </div>
-                  <div className="d-flex flex-column mx-2 align-items-center">
-                    <p>{day.wind}</p>
-                    <p>Wind</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </>
+              );
+            })}
+          </div>
+        </div>
       )}
-    </div>
+    </>
   );
 };
 
